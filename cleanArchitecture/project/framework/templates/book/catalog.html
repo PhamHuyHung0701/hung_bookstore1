@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Danh sách sách - Bookstore{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="fas fa-book me-2"></i>Danh sách sách</h2>
+    </div>
+    <div class="col-md-4">
+        <form method="get" class="d-flex">
+            <input type="text" class="form-control me-2" name="search" 
+                   placeholder="Tìm kiếm sách..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+{% if books %}
+<div class="row">
+    {% for book in books %}
+    <div class="col-md-4 col-lg-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="text-center mb-3">
+                    <i class="fas fa-book fa-4x text-primary"></i>
+                </div>
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted">
+                    <i class="fas fa-user-edit me-1"></i>{{ book.author }}
+                </p>
+                <p class="card-text">
+                    <strong class="text-danger fs-5">{{ book.price|floatformat:0 }} VNĐ</strong>
+                </p>
+                <p class="card-text">
+                    {% if book.stock > 0 %}
+                        <span class="badge bg-success">
+                            <i class="fas fa-check me-1"></i>Còn {{ book.stock }} cuốn
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-times me-1"></i>Hết hàng
+                        </span>
+                    {% endif %}
+                </p>
+                <div class="mt-auto">
+                    <a href="{% url 'book:detail' book.id %}" class="btn btn-outline-primary btn-sm me-1">
+                        <i class="fas fa-eye"></i> Chi tiết
+                    </a>
+                    {% if book.stock > 0 %}
+                    <a href="{% url 'cart:add_to_cart' book.id %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-cart-plus"></i> Thêm
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    {% if search_query %}
+        Không tìm thấy sách nào phù hợp với "{{ search_query }}"
+    {% else %}
+        Chưa có sách nào trong hệ thống.
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

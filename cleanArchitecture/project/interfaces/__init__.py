@@ -1,0 +1,1 @@
+# Interfaces Layer - Interface Adapters

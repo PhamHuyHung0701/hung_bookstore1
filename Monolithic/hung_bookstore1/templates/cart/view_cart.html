@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Giỏ hàng - Bookstore{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-shopping-cart me-2"></i>Giỏ hàng của bạn</h2>
+
+{% if cart_items %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sách</th>
+                            <th class="text-center">Đơn giá</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-center">Thành tiền</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-book fa-2x text-primary me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">{{ item.book.title }}</h6>
+                                        <small class="text-muted">{{ item.book.author }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center align-middle">
+                                {{ item.book.price|floatformat:0 }} VNĐ
+                            </td>
+                            <td class="text-center align-middle">
+                                <form method="post" action="{% url 'cart:update_item' item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm" style="width: 120px;">
+                                        <button type="button" class="btn btn-outline-secondary" 
+                                                onclick="updateQuantity(this, -1)">-</button>
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                               min="0" max="{{ item.book.stock }}" 
+                                               class="form-control text-center quantity-input">
+                                        <button type="button" class="btn btn-outline-secondary" 
+                                                onclick="updateQuantity(this, 1)">+</button>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-link">Cập nhật</button>
+                                </form>
+                            </td>
+                            <td class="text-center align-middle text-danger fw-bold">
+                                {{ item.get_subtotal|floatformat:0 }} VNĐ
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'cart:remove_item' item.id %}" 
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Bạn có chắc muốn xóa sách này?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Tổng đơn hàng</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Số lượng sách:</span>
+                    <strong>{{ cart_items|length }} loại</strong>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="fs-5">Tổng tiền:</span>
+                    <strong class="text-danger fs-4">{{ cart.get_total|floatformat:0 }} VNĐ</strong>
+                </div>
+                <button class="btn btn-success w-100 btn-lg" disabled>
+                    <i class="fas fa-credit-card me-2"></i>Thanh toán
+                </button>
+                <small class="text-muted d-block text-center mt-2">
+                    (Chức năng thanh toán đang phát triển)
+                </small>
+            </div>
+        </div>
+        
+        <a href="{% url 'book:catalog' %}" class="btn btn-outline-primary w-100 mt-3">
+            <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+        </a>
+    </div>
+</div>
+
+<script>
+function updateQuantity(btn, delta) {
+    const input = btn.parentElement.querySelector('.quantity-input');
+    let value = parseInt(input.value) + delta;
+    const max = parseInt(input.getAttribute('max'));
+    if (value >= 0 && value <= max) {
+        input.value = value;
+    }
+}
+</script>
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-shopping-cart fa-5x text-muted mb-4"></i>
+    <h3 class="text-muted">Giỏ hàng trống</h3>
+    <p class="text-muted">Bạn chưa thêm sách nào vào giỏ hàng.</p>
+    <a href="{% url 'book:catalog' %}" class="btn btn-primary btn-lg mt-3">
+        <i class="fas fa-book me-2"></i>Xem danh sách sách
+    </a>
+</div>
+{% endif %}
+{% endblock %}
