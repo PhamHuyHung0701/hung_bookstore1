@@ -4,7 +4,6 @@ Customer Service API Views
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.contrib.auth.hashers import make_password
 
 from .models import Customer
 from .serializers import (
@@ -25,9 +24,9 @@ def register(request):
     if serializer.is_valid():
         customer = Customer(
             name=serializer.validated_data['name'],
-            email=serializer.validated_data['email']
+            email=serializer.validated_data['email'],
+            password=serializer.validated_data['password']  # Lưu plain text
         )
-        customer.set_password(serializer.validated_data['password'])
         customer.save()
         
         return Response({

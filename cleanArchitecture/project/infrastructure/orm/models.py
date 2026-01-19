@@ -2,7 +2,6 @@
 Django ORM Models - Maps to MySQL database tables
 """
 from django.db import models
-from django.contrib.auth.hashers import make_password, check_password as django_check_password
 
 
 class CustomerModel(models.Model):
@@ -22,10 +21,12 @@ class CustomerModel(models.Model):
         return self.name
 
     def set_password(self, raw_password):
-        self.password = make_password(raw_password)
+        """Lưu mật khẩu plain text (không mã hóa)"""
+        self.password = raw_password
 
     def check_password(self, raw_password):
-        return django_check_password(raw_password, self.password)
+        """So sánh mật khẩu plain text"""
+        return self.password == raw_password
 
 
 class BookModel(models.Model):

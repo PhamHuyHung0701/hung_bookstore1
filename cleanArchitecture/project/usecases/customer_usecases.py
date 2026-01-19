@@ -2,7 +2,6 @@
 Customer Use Cases - Application Business Rules
 """
 from typing import Optional
-from django.contrib.auth.hashers import make_password, check_password
 
 from ..domain.entities.customer import Customer
 from ..domain.repositories.customer_repository import CustomerRepositoryInterface
@@ -42,16 +41,13 @@ class RegisterCustomerUseCase:
         customer = Customer(
             name=name,
             email=email,
-            password=password
+            password=password  # Lưu plain text, không mã hóa
         )
 
         # Validate customer data
         customer.validate()
 
-        # Hash password before saving
-        customer.password = make_password(password)
-
-        # Save and return
+        # Save and return (password đã là plain text)
         return self.customer_repository.create(customer)
 
 
@@ -80,7 +76,8 @@ class LoginCustomerUseCase:
         if not customer:
             raise ValueError("Email không tồn tại!")
 
-        if not check_password(password, customer.password):
+        # So sánh plain text password
+        if customer.password != password:
             raise ValueError("Mật khẩu không đúng!")
 
         return customer
