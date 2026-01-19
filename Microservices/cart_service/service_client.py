@@ -1,83 +1,82 @@
 """
-Cart Service - Service Client for calling other microservices
+Cart Service - Service Client for accessing other microservices data
+
+NOTE: In a real microservices architecture, each service runs on different ports.
+Since we're running all services in the same Django project for demo purposes,
+we access the models directly instead of making HTTP requests to avoid deadlock.
+In production, you would use HTTP requests to different service URLs.
 """
-import requests
-from django.conf import settings
+from customer_service.models import Customer
+from book_service.models import Book
 
 
 class ServiceClient:
-    """Client for calling other microservices via REST APIs"""
+    """
+    Client for accessing other microservices data.
     
-    # Service URLs (configurable in settings)
-    CUSTOMER_SERVICE_URL = getattr(settings, 'CUSTOMER_SERVICE_URL', 'http://localhost:8000/api/customers')
-    BOOK_SERVICE_URL = getattr(settings, 'BOOK_SERVICE_URL', 'http://localhost:8000/api/books')
+    In a real microservices setup with separate servers, this would use HTTP requests.
+    For this demo (single Django server), we access models directly to avoid deadlock.
+    """
     
     @classmethod
     def check_customer_exists(cls, customer_id):
-        """Check if customer exists in customer_service"""
+        """Check if customer exists"""
         try:
-            response = requests.get(
-                f"{cls.CUSTOMER_SERVICE_URL}/{customer_id}/exists/",
-                timeout=5
-            )
-            if response.status_code == 200:
-                return response.json().get('exists', False)
+            return Customer.objects.filter(id=customer_id).exists()
+        except Exception:
             return False
-        except requests.RequestException:
-            # If service is unavailable, assume customer exists (for development)
-            return True
 
     @classmethod
     def get_customer(cls, customer_id):
-        """Get customer data from customer_service"""
+        """Get customer data"""
         try:
-            response = requests.get(
-                f"{cls.CUSTOMER_SERVICE_URL}/{customer_id}/",
-                timeout=5
-            )
-            if response.status_code == 200:
-                return response.json().get('customer')
-            return None
-        except requests.RequestException:
+            customer = Customer.objects.get(id=customer_id)
+            return {
+                'id': customer.id,
+                'name': customer.name,
+                'email': customer.email
+            }
+        except Customer.DoesNotExist:
             return None
 
     @classmethod
     def get_book(cls, book_id):
-        """Get book data from book_service"""
+        """Get book data"""
         try:
-            response = requests.get(
-                f"{cls.BOOK_SERVICE_URL}/{book_id}/",
-                timeout=5
-            )
-            if response.status_code == 200:
-                return response.json().get('book')
-            return None
-        except requests.RequestException:
+            book = Book.objects.get(id=book_id)
+            return {
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'price': float(book.price),
+                'stock': book.stock
+            }
+        except Book.DoesNotExist:
             return None
 
     @classmethod
     def check_book_stock(cls, book_id):
-        """Check book stock from book_service"""
+        """Check book stock"""
         try:
-            response = requests.get(
-                f"{cls.BOOK_SERVICE_URL}/{book_id}/stock/",
-                timeout=5
-            )
-            if response.status_code == 200:
-                return response.json()
-            return None
-        except requests.RequestException:
+            book = Book.objects.get(id=book_id)
+            return {
+                'book_id': book.id,
+                'title': book.title,
+                'stock': book.stock,
+                'available': book.stock > 0
+            }
+        except Book.DoesNotExist:
             return None
 
     @classmethod
     def update_book_stock(cls, book_id, quantity_change):
-        """Update book stock in book_service"""
+        """Update book stock"""
         try:
-            response = requests.put(
-                f"{cls.BOOK_SERVICE_URL}/{book_id}/update-stock/",
-                json={'quantity': quantity_change},
-                timeout=5
-            )
-            return response.status_code == 200
-        except requests.RequestException:
+            book = Book.objects.get(id=book_id)
+            book.stock += quantity_change
+            if book.stock < 0:
+                book.stock = 0
+            book.save()
+            return True
+        except Book.DoesNotExist:
             return False
