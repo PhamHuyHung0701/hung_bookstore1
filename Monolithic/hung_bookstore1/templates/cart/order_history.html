@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lịch sử đơn hàng</h1>
+{% if orders %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Tổng tiền</th>
+                <th>Vận chuyển</th>
+                <th>Thanh toán</th>
+                <th>Ngày đặt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.total_price }}</td>
+                <td>{{ order.shipping.method_name if order.shipping else 'N/A' }}</td>
+                <td>{{ order.payment.method_name if order.payment else 'N/A' }}</td>
+                <td>{{ order.created_at|date:"d/m/Y" if order.created_at else 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Bạn chưa có đơn hàng nào.</p>
+{% endif %}
+<a href="{% url 'book:catalog' %}" class="btn btn-primary">Tiếp tục mua sắm</a>
+{% endblock %}</content>
+<parameter name="filePath">d:\hung_bookstore1\Monolithic\hung_bookstore1\templates\cart\order_history.html

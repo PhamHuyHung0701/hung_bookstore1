@@ -38,14 +38,13 @@ TEMPLATES = [
     },
 ]
 
+# Shared database for all 3 projects (Monolithic, cleanArchitecture, Microservices)
+SHARED_DB_PATH = Path(__file__).resolve().parent.parent.parent.parent.parent / 'shared_db.sqlite3'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bookstore_db',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': SHARED_DB_PATH,
     }
 }
 

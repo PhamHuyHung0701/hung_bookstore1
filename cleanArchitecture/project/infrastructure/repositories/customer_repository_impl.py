@@ -18,9 +18,7 @@ class DjangoCustomerRepository(CustomerRepositoryInterface):
             id=model.id,
             name=model.name,
             email=model.email,
-            password=model.password,
-            created_at=model.created_at,
-            updated_at=model.updated_at
+            password=model.password
         )
 
     def _to_model(self, entity: Customer) -> CustomerModel:

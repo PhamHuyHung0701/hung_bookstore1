@@ -83,9 +83,9 @@
                     <span class="fs-5">Tổng tiền:</span>
                     <strong class="text-danger fs-4">{{ cart.get_total|floatformat:0 }} VNĐ</strong>
                 </div>
-                <button class="btn btn-success w-100 btn-lg" disabled>
+                <a href="{% url 'cart:checkout' %}" class="btn btn-success w-100 btn-lg">
                     <i class="fas fa-credit-card me-2"></i>Thanh toán
-                </button>
+                </a>
                 <small class="text-muted d-block text-center mt-2">
                     (Chức năng thanh toán đang phát triển)
                 </small>

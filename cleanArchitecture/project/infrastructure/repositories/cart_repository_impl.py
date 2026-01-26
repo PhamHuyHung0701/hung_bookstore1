@@ -20,9 +20,7 @@ class DjangoCartRepository(CartRepositoryInterface):
             title=model.title,
             author=model.author,
             price=Decimal(str(model.price)),
-            stock=model.stock,
-            created_at=model.created_at,
-            updated_at=model.updated_at
+            stock_quantity=model.stock_quantity
         )
 
     def _cart_item_to_entity(self, model: CartItemModel) -> CartItem:
@@ -32,8 +30,7 @@ class DjangoCartRepository(CartRepositoryInterface):
             cart_id=model.cart_id,
             book_id=model.book_id,
             book=self._book_to_entity(model.book),
-            quantity=model.quantity,
-            added_at=model.added_at
+            quantity=model.quantity
         )
 
     def _cart_to_entity(self, model: CartModel, include_items: bool = True) -> Cart:
@@ -46,9 +43,8 @@ class DjangoCartRepository(CartRepositoryInterface):
         return Cart(
             id=model.id,
             customer_id=model.customer_id,
-            items=items,
-            created_at=model.created_at,
-            updated_at=model.updated_at
+            is_active=model.is_active,
+            items=items
         )
 
     def get_by_customer_id(self, customer_id: int) -> Optional[Cart]:
@@ -77,7 +73,7 @@ class DjangoCartRepository(CartRepositoryInterface):
         try:
             item = CartItemModel.objects.get(cart=cart, book=book)
             # Update quantity
-            if item.quantity + quantity <= book.stock:
+            if item.quantity + quantity <= book.stock_quantity:
                 item.quantity += quantity
                 item.save()
             return self._cart_item_to_entity(item)

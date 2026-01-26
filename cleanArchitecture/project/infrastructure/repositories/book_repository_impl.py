@@ -20,9 +20,7 @@ class DjangoBookRepository(BookRepositoryInterface):
             title=model.title,
             author=model.author,
             price=Decimal(str(model.price)),
-            stock=model.stock,
-            created_at=model.created_at,
-            updated_at=model.updated_at
+            stock_quantity=model.stock_quantity
         )
 
     def get_all(self) -> List[Book]:
@@ -49,8 +47,18 @@ class DjangoBookRepository(BookRepositoryInterface):
         """Update book stock"""
         try:
             model = BookModel.objects.get(id=book_id)
-            model.stock = quantity
+            model.stock_quantity = quantity
             model.save()
             return True
         except BookModel.DoesNotExist:
             return False
+
+    def create(self, title: str, author: str, price: float, stock_quantity: int) -> Book:
+        """Create a new book"""
+        model = BookModel.objects.create(
+            title=title,
+            author=author,
+            price=price,
+            stock_quantity=stock_quantity
+        )
+        return self._to_entity(model)

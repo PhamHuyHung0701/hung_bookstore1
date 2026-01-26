@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Gợi ý sách cho bạn</h1>
+{% if recommended_books %}
+    <div class="row">
+        {% for book in recommended_books %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text">Tác giả: {{ book.author }}</p>
+                    <p class="card-text">Giá: {{ book.price }}</p>
+                    <p class="card-text">Còn lại: {{ book.stock_quantity }}</p>
+                    <a href="{% url 'book:detail' book.id %}" class="btn btn-primary">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Không có sách gợi ý.</p>
+{% endif %}
+<a href="{% url 'book:catalog' %}" class="btn btn-secondary">Quay lại danh mục</a>
+{% endblock %}</content>
+<parameter name="filePath">d:\hung_bookstore1\Monolithic\hung_bookstore1\templates\book\recommendations.html

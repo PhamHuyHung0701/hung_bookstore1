@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Customer
+from hung_bookstore1.book.models import Staff
 
 
 def register(request):
@@ -33,11 +34,19 @@ def register(request):
 
 
 def login(request):
-    """Đăng nhập"""
+    """Đăng nhập - hỗ trợ cả Customer và Staff"""
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
 
+        # Kiểm tra xem có phải tài khoản staff không
+        if email == 'staff@bookstore.com' and password == 'staff':
+            request.session['staff'] = True
+            request.session['staff_email'] = email
+            messages.success(request, 'Đăng nhập staff thành công!')
+            return redirect('book:add_stock')
+
+        # Nếu không phải staff, kiểm tra customer
         try:
             customer = Customer.objects.get(email=email)
             if customer.check_password(password):
@@ -69,3 +78,27 @@ def profile(request):
 
     customer = Customer.objects.get(id=customer_id)
     return render(request, 'customer/profile.html', {'customer': customer})
+
+
+def staff_login(request):
+    """Đăng nhập staff"""
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        # Simple check
+        if email == 'staff@bookstore.com' and password == 'staff':
+            request.session['staff'] = True
+            messages.success(request, 'Đăng nhập staff thành công!')
+            return redirect('book:add_stock')
+        else:
+            messages.error(request, 'Thông tin đăng nhập không đúng!')
+    
+    return render(request, 'customer/staff_login.html')
+
+
+def staff_logout(request):
+    """Đăng xuất staff"""
+    request.session.pop('staff', None)
+    messages.success(request, 'Đã đăng xuất staff!')
+    return redirect('book:catalog')

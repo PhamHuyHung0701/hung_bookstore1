@@ -2,7 +2,6 @@
 Customer Entity - Core business object
 """
 from dataclasses import dataclass
-from datetime import datetime
 from typing import Optional
 
 
@@ -13,8 +12,6 @@ class Customer:
     name: str = ""
     email: str = ""
     password: str = ""
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     def validate(self) -> bool:
         """Validate customer data"""
@@ -31,7 +28,5 @@ class Customer:
         return {
             'id': self.id,
             'name': self.name,
-            'email': self.email,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'email': self.email
         }

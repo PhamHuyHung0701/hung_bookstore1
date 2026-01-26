@@ -76,3 +76,50 @@ def remove_from_cart(request, item_id):
         messages.error(request, result['message'])
 
     return redirect('cart:view_cart')
+
+
+def checkout(request):
+    """Checkout - đặt hàng"""
+    customer_id = request.session.get('customer_id')
+    if not customer_id:
+        messages.warning(request, 'Vui lòng đăng nhập để đặt hàng!')
+        return redirect('customer:login')
+
+    controller = CartController()
+    if request.method == 'POST':
+        shipping_id = request.POST.get('shipping')
+        payment_id = request.POST.get('payment')
+        
+        result = controller.checkout(customer_id, shipping_id, payment_id)
+        
+        if result['success']:
+            messages.success(request, result['message'])
+            return redirect('cart:view_cart')
+        else:
+            messages.error(request, result['message'])
+    
+    result = controller.get_cart(customer_id)
+    shipping_result = controller.get_shipping_options()
+    payment_result = controller.get_payment_options()
+    
+    return render(request, 'cart/checkout.html', {
+        'cart': result['cart'],
+        'cart_items': result['cart_items'],
+        'shippings': shipping_result['shippings'],
+        'payments': payment_result['payments']
+    })
+
+
+def order_history(request):
+    """Xem lịch sử đơn hàng"""
+    customer_id = request.session.get('customer_id')
+    if not customer_id:
+        messages.warning(request, 'Vui lòng đăng nhập để xem lịch sử đơn hàng!')
+        return redirect('customer:login')
+
+    controller = CartController()
+    result = controller.get_order_history(customer_id)
+    
+    return render(request, 'cart/order_history.html', {
+        'orders': result['orders']
+    })

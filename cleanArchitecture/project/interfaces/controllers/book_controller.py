@@ -6,7 +6,9 @@ from typing import Dict, Any, List
 
 from ...usecases.book_usecases import (
     GetBookCatalogUseCase,
-    GetBookDetailUseCase
+    GetBookDetailUseCase,
+    AddBookUseCase,
+    GetBookRecommendationsUseCase
 )
 from ...infrastructure.repositories.book_repository_impl import DjangoBookRepository
 
@@ -51,4 +53,40 @@ class BookController:
         return {
             'success': False,
             'message': 'Không tìm thấy sách'
+        }
+
+    def add_book(self, title: str, author: str, price: str, stock_quantity: str) -> Dict[str, Any]:
+        """
+        Add a new book
+        
+        Returns:
+            Dict with 'success' and optionally 'message'
+        """
+        try:
+            price_decimal = float(price)
+            stock = int(stock_quantity)
+            use_case = AddBookUseCase(self.book_repository)
+            book = use_case.execute(title, author, price_decimal, stock)
+            return {
+                'success': True,
+                'book': book
+            }
+        except ValueError as e:
+            return {
+                'success': False,
+                'message': str(e)
+            }
+
+    def get_recommendations(self, customer_id: int) -> Dict[str, Any]:
+        """
+        Get book recommendations for customer
+        
+        Returns:
+            Dict with 'success' and 'books'
+        """
+        use_case = GetBookRecommendationsUseCase(self.book_repository)
+        books = use_case.execute(customer_id)
+        return {
+            'success': True,
+            'books': books
         }

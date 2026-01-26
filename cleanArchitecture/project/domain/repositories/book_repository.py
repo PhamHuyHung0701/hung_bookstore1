@@ -28,3 +28,8 @@ class BookRepositoryInterface(ABC):
     def update_stock(self, book_id: int, quantity: int) -> bool:
         """Update book stock"""
         pass
+
+    @abstractmethod
+    def create(self, title: str, author: str, price: float, stock_quantity: int) -> Book:
+        """Create a new book"""
+        pass

@@ -2,7 +2,6 @@
 Cart and CartItem Entities - Core business objects
 """
 from dataclasses import dataclass, field
-from datetime import datetime
 from typing import Optional, List
 from decimal import Decimal
 from .book import Book
@@ -16,7 +15,6 @@ class CartItem:
     book: Optional[Book] = None
     book_id: Optional[int] = None
     quantity: int = 1
-    added_at: Optional[datetime] = None
 
     def get_subtotal(self) -> Decimal:
         """Calculate subtotal for this item"""
@@ -32,8 +30,7 @@ class CartItem:
             'book_id': self.book_id,
             'book': self.book.to_dict() if self.book else None,
             'quantity': self.quantity,
-            'subtotal': float(self.get_subtotal()),
-            'added_at': self.added_at
+            'subtotal': float(self.get_subtotal())
         }
 
 
@@ -42,9 +39,8 @@ class Cart:
     """Cart entity representing a shopping cart"""
     id: Optional[int] = None
     customer_id: Optional[int] = None
+    is_active: bool = True
     items: List[CartItem] = field(default_factory=list)
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
     def get_total(self) -> Decimal:
         """Calculate total price of all items in cart"""
@@ -63,9 +59,8 @@ class Cart:
         return {
             'id': self.id,
             'customer_id': self.customer_id,
+            'is_active': self.is_active,
             'items': [item.to_dict() for item in self.items],
             'total': float(self.get_total()),
-            'item_count': self.get_item_count(),
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'item_count': self.get_item_count()
         }

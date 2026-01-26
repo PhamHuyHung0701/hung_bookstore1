@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Lịch sử đơn hàng - Bookstore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-history me-2"></i>Lịch sử đơn hàng</h2>
+    
+    {% if orders %}
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Tổng tiền</th>
+                        <th>Vận chuyển</th>
+                        <th>Thanh toán</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>#{{ order.id }}</strong></td>
+                        <td class="text-success">{{ order.total_price }}đ</td>
+                        <td>{{ order.shipping_method|default:"N/A" }}</td>
+                        <td>{{ order.payment_method|default:"N/A" }}</td>
+                        <td>{{ order.created_at|default:"N/A" }}</td>
+                        <td>
+                            <span class="badge bg-success">{{ order.status|default:"Hoàn thành" }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>Bạn chưa có đơn hàng nào.
+    </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{% url 'catalog' %}" class="btn btn-primary">
+            <i class="fas fa-book me-2"></i>Tiếp tục mua sắm
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -14,17 +14,17 @@ class Book:
     title: str = ""
     author: str = ""
     price: Decimal = Decimal("0.00")
-    stock: int = 0
+    stock_quantity: int = 0
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
     def is_available(self) -> bool:
         """Check if book is in stock"""
-        return self.stock > 0
+        return self.stock_quantity > 0
 
     def can_purchase(self, quantity: int) -> bool:
         """Check if requested quantity is available"""
-        return self.stock >= quantity
+        return self.stock_quantity >= quantity
 
     def to_dict(self) -> dict:
         """Convert entity to dictionary"""
@@ -33,7 +33,7 @@ class Book:
             'title': self.title,
             'author': self.author,
             'price': float(self.price),
-            'stock': self.stock,
+            'stock_quantity': self.stock_quantity,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }

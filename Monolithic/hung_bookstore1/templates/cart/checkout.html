@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Đặt hàng</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Giỏ hàng</h4>
+            {% for item in cart_items %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5>{{ item.book.title }}</h5>
+                    <p>Tác giả: {{ item.book.author }}</p>
+                    <p>Số lượng: {{ item.quantity }} x {{ item.book.price }} = {{ item.get_subtotal }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <p><strong>Tổng: {{ cart.get_total }}</strong></p>
+        </div>
+        <div class="col-md-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="shipping" class="form-label">Phương thức giao hàng</label>
+                    <select class="form-control" id="shipping" name="shipping">
+                        {% for s in shippings %}
+                        <option value="{{ s.id }}">{{ s.method_name }} - {{ s.fee }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="payment" class="form-label">Phương thức thanh toán</label>
+                    <select class="form-control" id="payment" name="payment">
+                        {% for p in payments %}
+                        <option value="{{ p.id }}">{{ p.method_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Đặt hàng</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

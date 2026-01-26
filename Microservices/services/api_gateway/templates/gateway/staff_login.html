@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Đăng nhập Staff - Bookstore{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-shield me-2"></i>Đăng nhập Staff
+                </h5>
+            </div>
+            <div class="card-body p-5">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required
+                               placeholder="staff@bookstore.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password" required
+                               placeholder="Nhập mật khẩu">
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 py-2">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập Staff
+                    </button>
+                </form>
+                <hr>
+                <div class="alert alert-info mb-0">
+                    <small>
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Tài khoản test:</strong> staff@bookstore.com / staff
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

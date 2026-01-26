@@ -45,3 +45,46 @@ class GetBookDetailUseCase:
             Book entity or None
         """
         return self.book_repository.get_by_id(book_id)
+
+
+class AddBookUseCase:
+    """Use case for adding a new book"""
+
+    def __init__(self, book_repository: BookRepositoryInterface):
+        self.book_repository = book_repository
+
+    def execute(self, title: str, author: str, price: float, stock_quantity: int) -> Book:
+        """
+        Add a new book
+        
+        Args:
+            title: Book title
+            author: Book author
+            price: Book price
+            stock_quantity: Initial stock
+            
+        Returns:
+            Created Book entity
+        """
+        return self.book_repository.create(title, author, price, stock_quantity)
+
+
+class GetBookRecommendationsUseCase:
+    """Use case for getting book recommendations"""
+
+    def __init__(self, book_repository: BookRepositoryInterface):
+        self.book_repository = book_repository
+
+    def execute(self, customer_id: int, limit: int = 5) -> List[Book]:
+        """
+        Get book recommendations for customer
+        
+        Args:
+            customer_id: Customer ID
+            limit: Max number of recommendations
+            
+        Returns:
+            List of recommended Book entities
+        """
+        # For simplicity, return top books by stock
+        return self.book_repository.get_all()[:limit]
