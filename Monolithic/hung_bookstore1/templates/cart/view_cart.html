@@ -40,9 +40,8 @@
                                     {% csrf_token %}
                                     <div class="input-group input-group-sm" style="width: 120px;">
                                         <button type="button" class="btn btn-outline-secondary" 
-                                                onclick="updateQuantity(this, -1)">-</button>
-                                        <input type="number" name="quantity" value="{{ item.quantity }}" 
-                                               min="0" max="{{ item.book.stock }}" 
+                                                onclick="updateQuantity(this, -1)">-</button>                                        <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                               min="0" max="{{ item.book.stock_quantity }}" 
                                                class="form-control text-center quantity-input">
                                         <button type="button" class="btn btn-outline-secondary" 
                                                 onclick="updateQuantity(this, 1)">+</button>

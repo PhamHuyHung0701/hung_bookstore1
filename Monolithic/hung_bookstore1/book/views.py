@@ -43,7 +43,7 @@ def add_stock(request):
             stock_quantity=stock_quantity
         )
         messages.success(request, 'Sách đã được thêm vào kho!')
-        return redirect('catalog')
+        return redirect('book:catalog')
     
     return render(request, 'book/add_stock.html')
 

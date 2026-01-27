@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'hung_bookstore1.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 # Shared database for all 3 projects (Monolithic, cleanArchitecture, Microservices)
 
-SHARED_DB_PATH = Path(__file__).resolve().parent.parent.parent.parent / 'shared_db.sqlite3'
+SHARED_DB_PATH = Path(__file__).resolve().parent.parent.parent / 'shared_db.sqlite3'
 
 DATABASES = {
     'default': {

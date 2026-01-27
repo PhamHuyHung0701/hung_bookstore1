@@ -33,11 +33,10 @@
                 </p>
                 <p class="card-text">
                     <strong class="text-danger fs-5">{{ book.price|floatformat:0 }} VNĐ</strong>
-                </p>
-                <p class="card-text">
-                    {% if book.stock > 0 %}
+                </p>                <p class="card-text">
+                    {% if book.stock_quantity > 0 %}
                         <span class="badge bg-success">
-                            <i class="fas fa-check me-1"></i>Còn {{ book.stock }} cuốn
+                            <i class="fas fa-check me-1"></i>Còn {{ book.stock_quantity }} cuốn
                         </span>
                     {% else %}
                         <span class="badge bg-secondary">
@@ -49,7 +48,7 @@
                     <a href="{% url 'book:detail' book.id %}" class="btn btn-outline-primary btn-sm me-1">
                         <i class="fas fa-eye"></i> Chi tiết
                     </a>
-                    {% if book.stock > 0 %}
+                    {% if book.stock_quantity > 0 %}
                     <a href="{% url 'cart:add_to_cart' book.id %}" class="btn btn-primary btn-sm">
                         <i class="fas fa-cart-plus"></i> Thêm
                     </a>
